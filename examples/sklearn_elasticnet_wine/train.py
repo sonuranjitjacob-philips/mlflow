@@ -43,6 +43,15 @@ if __name__ == "__main__":
             "Unable to download training & test CSV, check your internet connection. Error: %s", e
         )
 
+           
+    experiment_id = mlflow.create_experiment(
+                        "Wine Quality",
+                         tags={"version": "v1", "priority": "P1"},
+                         )
+    experiment = mlflow.get_experiment(experiment_id)
+    print("Name: {}".format(experiment.name))
+    
+        
     # Split the data into training and test sets. (0.75, 0.25) split.
     train, test = train_test_split(data)
 
@@ -55,7 +64,7 @@ if __name__ == "__main__":
     alpha = float(sys.argv[1]) if len(sys.argv) > 1 else 0.5
     l1_ratio = float(sys.argv[2]) if len(sys.argv) > 2 else 0.5
 
-    with mlflow.start_run():
+    with mlflow.start_run(experiment_id=experiment_id):       
         lr = ElasticNet(alpha=alpha, l1_ratio=l1_ratio, random_state=42)
         lr.fit(train_x, train_y)
 
